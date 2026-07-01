@@ -1,0 +1,48 @@
+name: Build Meta Zone
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller pillow
+
+      - name: Verify files
+        run: |
+          dir
+          echo "Looking for exiftool.exe:"
+          if (Test-Path "exiftool.exe") { Write-Host "exiftool.exe found!" } else { Write-Host "exiftool.exe NOT found!" }
+
+      - name: Build executable
+        run: >
+          pyinstaller
+          --onefile
+          --windowed
+          --clean
+          --noconfirm
+          --name "MetaZone"
+          --add-data "${{ github.workspace }}/exiftool.exe:."
+          metadata_tool.py
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetaZone-Windows
+          path: dist/MetaZone.exe
