@@ -9,6 +9,17 @@ try:
     from tkinterdnd2 import TkinterDnD, DND_FILES
     DND_AVAILABLE = True
 except ImportError:
+    import subprocess as _sp
+    try:
+        _sp.check_call([sys.executable, "-m", "pip", "install", "tkinterdnd2",
+                        "--quiet", "--break-system-packages"], timeout=60)
+        from tkinterdnd2 import TkinterDnD, DND_FILES
+        DND_AVAILABLE = True
+    except Exception:
+        DND_AVAILABLE = False
+        DND_FILES = None
+    DND_AVAILABLE = False
+    DND_FILES = None
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
