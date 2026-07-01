@@ -19,7 +19,6 @@ jobs:
                  python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pyinstaller pillow customtkinter
         run: pip install pyinstaller pillow customtkinter tkinterdnd2
 
       - name: Download ExifTool for Windows
